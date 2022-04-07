@@ -13,10 +13,11 @@ namespace Tests
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
-        public IEnumerator InteractionManagerTestsWithEnumeratorPasses()
+        public IEnumerator InteractionManagerTestsWaitSeconds()
         {
             float counter = 0;
-            InteractionManager.Instance.AddInteraction(Task.Delay(TimeSpan.FromSeconds(0.5f)));
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.WaitSeconds(0.5f);
             while (InteractionManager.Instance.Executing())
             {
                 counter += Time.deltaTime;
@@ -25,5 +26,8 @@ namespace Tests
             Debug.Log(counter);
             Assert.GreaterOrEqual(counter, 0.5f);
         }
+
+        //recursive interaction
+        //cancel interaction
     }
 }
