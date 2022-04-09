@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System.Threading.Tasks;
 using System;
+using NSubstitute;
+using UnityEngine.Events;
 
 namespace Tests
 {
@@ -79,6 +81,28 @@ namespace Tests
             }
             Debug.Log("custom script and others, duration:" + counter);
             Assert.GreaterOrEqual(counter, 1f);
+        }
+
+        [UnityTest]
+        public IEnumerator TimerStartAndEnd()
+        {
+            var OnEndSub = Substitute.For<Action>();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.Configure(1.5f, OnEndSub);
+            timer.StartTimer();
+            while(counter < 1.6f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            Debug.Log("Timer Duration:" + counter);
+            OnEndSub.Received(1).Invoke();
+        }
+
+        public void Testa()
+    {
+            Debug.Log("1 seconds");
         }
 
         //recursive interaction
