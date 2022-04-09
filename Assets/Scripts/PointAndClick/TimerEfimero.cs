@@ -4,24 +4,20 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 
-public class Timer : MonoBehaviour//, IInteraction
+public class TimerEfimero : IInteraction
 {
     float seconds;
-    /*
-    void Configure(float seconds)
-    {
-        this.seconds = seconds;
-    }
 
+    // Start is called before the first frame update
     public async Task Execute()
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
     }
-    */
+
+    // Update is called once per frame
     public void WaitForSeconds(float secondsP)
     {
-        TimerEfimero efimero = new TimerEfimero();
-        efimero.WaitForSeconds(secondsP);
+        seconds = secondsP;
+        InteractionManager.Instance.AddCommand(this);
     }
-
 }

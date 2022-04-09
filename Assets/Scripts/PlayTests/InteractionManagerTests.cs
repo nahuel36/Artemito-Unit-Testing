@@ -27,53 +27,58 @@ namespace Tests
             Debug.Log("wait seconds test, duration:" + counter);
             Assert.GreaterOrEqual(counter, 0.5f);
         }
-
-        [UnityTest]
-        public IEnumerator InteractionManagerTestsAnidatedCalls()
-        {
-            float counter = 0;
-            NestedTimer timerIterated = new GameObject("Timer").AddComponent<NestedTimer>();
-            timerIterated.WaitForSecs(0.5f);
-            
-            while (InteractionManager.Instance.Executing())
-            {
-                counter += Time.deltaTime;
-                yield return new WaitForEndOfFrame();
-            }
-            Debug.Log("anidated Task test, duration:" + counter);
-            Assert.GreaterOrEqual(counter, 0.5f);
-        }
         
         [UnityTest]
-        public IEnumerator InteractionManagerTwoInteractions()
+        public IEnumerator InteractionManagerThreeInteractions()
         {
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.WaitForSeconds(0.2f);
             timer.WaitForSeconds(0.5f);
             timer.WaitForSeconds(0.2f);
             while (InteractionManager.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
+
             }
-            Debug.Log("two wait seconds test, duration:" + counter);
-            Assert.GreaterOrEqual(counter, 0.7f);
+            Debug.Log("three wait seconds test, duration:" + counter);
+            Assert.GreaterOrEqual(counter, 0.9f);
         }
 
         [UnityTest]
-        public IEnumerator InteractionManagerTestsTwoAnidatedCalls()
+        public IEnumerator CustomScriptCall()
         {
             float counter = 0;
-            NestedTimer timerIterated = new GameObject("Timer").AddComponent<NestedTimer>();
-            timerIterated.WaitForSecs(0.5f);
-            timerIterated.WaitForSecs(0.2f);
+            CustomScriptTest cs = new GameObject("Custom").AddComponent<CustomScriptTest>();
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            cs.Configure(timer);
+            cs.LoadScript();
             while (InteractionManager.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            Debug.Log("two anidated Task test, duration:" + counter);
-            Assert.GreaterOrEqual(counter, 0.7f);
+            Debug.Log("custom script, duration:" + counter);
+            Assert.GreaterOrEqual(counter, 0.8f);
+        }
+
+        [UnityTest]
+        public IEnumerator CustomScriptCallAndMoreInteractions()
+        {
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.WaitForSeconds(0.2f);
+            CustomScriptTest cs = new GameObject("Custom").AddComponent<CustomScriptTest>();
+            cs.Configure(timer);
+            cs.LoadScript();
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            Debug.Log("custom script and others, duration:" + counter);
+            Assert.GreaterOrEqual(counter, 1f);
         }
 
         //recursive interaction
