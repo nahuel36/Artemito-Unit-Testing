@@ -5,46 +5,43 @@ using System.Threading.Tasks;
 
 public class InteractionManager  
 {
-    private static InteractionManager instance;
-    public static InteractionManager Instance {
-        get
-        {
-            if(instance == null)
-            {
-                instance = new InteractionManager();
-                instance.interactions = new Queue<Task>();
-                instance.executing = false;
-            }
+    public static InteractionManager Instance => _instance ?? (_instance = new InteractionManager());
 
-            return instance;
-        }
+    private readonly Queue<IInteraction> _commandsToExecute;
+    private bool _runningCommand;
+    private static InteractionManager _instance;
+
+    private InteractionManager()
+    {
+        _commandsToExecute = new Queue<IInteraction>();
+        _runningCommand = false;
     }
 
-    Queue<Task> interactions;
-    bool executing;
-    
-    public void AddInteraction(Task task)
+    public void AddCommand(IInteraction commandToEnqueue)
     {
-        interactions.Enqueue(task);
-        if(!executing)
-        {
-            executing = true;
-            Execute();
-        }
+        _commandsToExecute.Enqueue(commandToEnqueue);
+        RunNextCommand();
     }
 
     public bool Executing()
     {
-        return executing;
+        return _runningCommand;
     }
 
-    async Task Execute()
+    private async Task RunNextCommand()
     {
-        while(interactions.Count > 0)
+        if (_runningCommand)
         {
-            await interactions.Dequeue();
+            return;
         }
-        
-        executing = false;
-    } 
+
+        while (_commandsToExecute.Count > 0)
+        {
+            _runningCommand = true;
+            var commandToExecute = _commandsToExecute.Dequeue();
+            await commandToExecute.Execute();
+        }
+
+        _runningCommand = false;
+    }
 }

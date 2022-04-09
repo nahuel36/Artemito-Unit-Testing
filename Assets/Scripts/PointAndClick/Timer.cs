@@ -4,10 +4,28 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 
-public class Timer : MonoBehaviour
+public class Timer : MonoBehaviour, IInteraction
 {
-    public void WaitSeconds(float seconds)
+    float seconds;
+
+    /*public Timer(float seconds)
     {
-        InteractionManager.Instance.AddInteraction(Task.Delay(TimeSpan.FromSeconds(seconds)));
+        this.seconds = seconds;
+    }*/
+    void Configure(float seconds)
+    {
+        this.seconds = seconds;
     }
+
+    public async Task Execute()
+    {
+        await Task.Delay(TimeSpan.FromSeconds(seconds));
+    }
+
+    public void WaitForSeconds(float secondsP)
+    {
+        Configure(secondsP);
+        InteractionManager.Instance.AddCommand(this);
+    }
+
 }
