@@ -122,6 +122,81 @@ namespace Tests
             Debug.Log("Timer Duration:" + counter);
             Assert.GreaterOrEqual(counter, 5);
         }
+
+        [UnityTest]
+        public IEnumerator TimerStartAndConditionalEndTrue()
+        {
+            var OnEndSub = Substitute.For<Action>();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.Configure(1.5f, OnEndSub);
+            timer.StartTimer();
+            while (counter < 1.6f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer.ifEnded();
+            timer.WaitForSeconds(2);
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            Debug.Log("Timer Duration:" + counter);
+            Assert.GreaterOrEqual(counter, 3.6f);
+        }
+
+        [UnityTest]
+        public IEnumerator TimerStartAndConditionalEndFalse()
+        {
+            var OnEndSub = Substitute.For<Action>();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.Configure(1.5f, OnEndSub);
+            timer.StartTimer();
+            while (counter < 1f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer.ifEnded();
+            timer.WaitForSeconds(2);
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            Debug.Log("Timer Duration:" + counter);
+            Assert.GreaterOrEqual(counter, 1f);
+        }
+
+        [UnityTest]
+        public IEnumerator TimerStartAndConditionalAsIfEndFalse()
+        {
+            var OnEndSub = Substitute.For<Action>();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.Configure(1.5f, OnEndSub);
+            timer.StartTimer();
+            while (counter < 1f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            if(timer.ifEnded())
+                timer.WaitForSeconds(2);
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            Debug.Log("Timer Duration:" + counter);
+            Assert.GreaterOrEqual(counter, 1f);
+        }
         //cancel interaction
     }
 }

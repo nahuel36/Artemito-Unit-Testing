@@ -39,6 +39,12 @@ public class Timer : MonoBehaviour//, IInteraction
         }
     }
 
+    public bool ifEnded()
+    {
+        OnEndedTimer onend = new OnEndedTimer();
+        onend.QueueConditional(ended);
+        return ended;
+    }
     
     public void Configure(float seconds, Action endAction)
     {
@@ -46,12 +52,7 @@ public class Timer : MonoBehaviour//, IInteraction
         this.onEnd = new UnityEvent();
         this.onEnd.AddListener( () => endAction.Invoke());
     }
-    /*
-    public async Task Execute()
-    {
-        await Task.Delay(TimeSpan.FromSeconds(seconds));
-    }
-    */
+
     public void WaitForSeconds(float secondsP)
     {
         TimerEfimero efimero = new TimerEfimero();

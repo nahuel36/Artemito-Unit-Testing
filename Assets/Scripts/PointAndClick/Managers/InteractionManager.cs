@@ -10,10 +10,12 @@ public class InteractionManager
     private readonly Queue<IInteraction> _commandsToExecute;
     private bool _runningCommand;
     private static InteractionManager _instance;
+    private List<bool> _conditionals;
 
     private InteractionManager()
     {
         _commandsToExecute = new Queue<IInteraction>();
+        _conditionals = new List<bool>();
         _runningCommand = false;
     }
 
@@ -28,6 +30,11 @@ public class InteractionManager
         return _runningCommand;
     }
 
+    public void AddConditional(bool cond)
+    {
+        _conditionals.Add(cond);
+    }
+
     private async Task RunNextCommand()
     {
         if (_runningCommand)
@@ -39,7 +46,18 @@ public class InteractionManager
         {
             _runningCommand = true;
             var commandToExecute = _commandsToExecute.Dequeue();
-            await commandToExecute.Execute();
+            bool execute = true;
+
+            for (int i = 0; i < _conditionals.Count; i++)
+            {
+                if(_conditionals[i] == false)
+                {
+                    execute = false;
+                }
+            }
+
+            if(execute)
+                await commandToExecute.Execute();
         }
 
         _runningCommand = false;
