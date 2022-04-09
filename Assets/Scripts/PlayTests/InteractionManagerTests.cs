@@ -100,12 +100,28 @@ namespace Tests
             OnEndSub.Received(1).Invoke();
         }
 
-        public void Testa()
-    {
-            Debug.Log("1 seconds");
+        [UnityTest]
+        public IEnumerator TimerStartAndExecuteOtherAction()
+        {
+            
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.Configure(1.5f, ()=> { Debug.Log("executing end, duration:" + counter); counter += 1; });
+            timer.StartTimer();
+            while (counter < 1f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer.WaitForSeconds(3f);
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            Debug.Log("Timer Duration:" + counter);
+            Assert.GreaterOrEqual(counter, 5);
         }
-
-        //recursive interaction
         //cancel interaction
     }
 }

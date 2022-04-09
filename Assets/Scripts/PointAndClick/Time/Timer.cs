@@ -32,7 +32,8 @@ public class Timer : MonoBehaviour//, IInteraction
                 if(counter > seconds)
                 {
                     ended = true;
-                    onEnd.Invoke();
+                    EndTimer end = new EndTimer();
+                    end.QueueOnEnd(onEnd);
                 }
             }
         }
