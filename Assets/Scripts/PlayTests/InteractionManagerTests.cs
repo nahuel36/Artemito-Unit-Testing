@@ -32,7 +32,7 @@ namespace Tests
         public IEnumerator InteractionManagerTestsAnidatedCalls()
         {
             float counter = 0;
-            IteratedTimer timerIterated = new GameObject("Timer").AddComponent<IteratedTimer>();
+            NestedTimer timerIterated = new GameObject("Timer").AddComponent<NestedTimer>();
             timerIterated.WaitForSecs(0.5f);
             
             while (InteractionManager.Instance.Executing())
@@ -57,6 +57,22 @@ namespace Tests
                 yield return new WaitForEndOfFrame();
             }
             Debug.Log("two wait seconds test, duration:" + counter);
+            Assert.GreaterOrEqual(counter, 0.7f);
+        }
+
+        [UnityTest]
+        public IEnumerator InteractionManagerTestsTwoAnidatedCalls()
+        {
+            float counter = 0;
+            NestedTimer timerIterated = new GameObject("Timer").AddComponent<NestedTimer>();
+            timerIterated.WaitForSecs(0.5f);
+            timerIterated.WaitForSecs(0.2f);
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            Debug.Log("two anidated Task test, duration:" + counter);
             Assert.GreaterOrEqual(counter, 0.7f);
         }
 

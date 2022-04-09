@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public class IteratedTimer : MonoBehaviour, IInteraction
+public class NestedTimer : MonoBehaviour, IInteraction
 {
     public Timer timer;
 
