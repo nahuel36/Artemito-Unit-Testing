@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class OnEndedTimer : IInteraction
+public class Conditional : IInteraction
 {
     bool condition;
 
@@ -21,10 +21,4 @@ public class OnEndedTimer : IInteraction
         InteractionManager.Instance.AddCommand(this);
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
