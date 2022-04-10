@@ -11,6 +11,7 @@ public class EndTimer : IInteraction
     public async Task Execute()
     {
         onEnd.Invoke();
+        await Task.Yield();
     }
 
     public void QueueOnEnd(UnityEvent action)

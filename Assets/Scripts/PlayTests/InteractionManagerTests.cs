@@ -126,6 +126,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartAndConditionalEndTrue()
         {
+            InteractionManager.Instance.ClearConditionals();
             var OnEndSub = Substitute.For<Action>();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
@@ -196,6 +197,30 @@ namespace Tests
 
             Debug.Log("Timer Duration:" + counter);
             Assert.GreaterOrEqual(counter, 1f);
+        }
+
+        [UnityTest]
+        public IEnumerator TimerStartUseConditionalFalseAndExecuteEndSub()
+        {
+            var OnEndSub = Substitute.For<Action>();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            timer.Configure(1.5f, OnEndSub);
+            timer.StartTimer();
+            while (counter < 1f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer.ifEnded();
+            while(counter < 2f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            Debug.Log("Timer Duration:" + counter);
+            OnEndSub.Received(1).Invoke();
         }
         //cancel interaction
     }

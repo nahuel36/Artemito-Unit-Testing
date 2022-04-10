@@ -35,6 +35,16 @@ public class InteractionManager
         _conditionals.Add(cond);
     }
 
+    public void ClearConditionals()
+    {
+        _conditionals.Clear();
+    }
+
+    public void DebugCount()
+    {
+        Debug.Log(_conditionals.Count);
+    }
+
     private async Task RunNextCommand()
     {
         if (_runningCommand)
@@ -55,8 +65,7 @@ public class InteractionManager
                     execute = false;
                 }
             }
-
-            if(execute)
+            if(execute || commandToExecute is EndTimer)
                 await commandToExecute.Execute();
         }
 
