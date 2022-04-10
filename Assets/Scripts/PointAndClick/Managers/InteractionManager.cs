@@ -69,6 +69,7 @@ public class InteractionManager
                 await commandToExecute.Execute();
         }
 
+        ClearConditionals();
         _runningCommand = false;
     }
 }
