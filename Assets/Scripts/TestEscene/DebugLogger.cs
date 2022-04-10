@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public class TestScene : MonoBehaviour, IInteraction
+public class DebugLogger : MonoBehaviour, IInteraction
 {
     public string log;
 
