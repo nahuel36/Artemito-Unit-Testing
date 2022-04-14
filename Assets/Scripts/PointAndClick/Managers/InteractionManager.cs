@@ -58,6 +58,10 @@ public class InteractionManager
             var commandToExecute = _commandsToExecute.Dequeue();
             bool execute = true;
 
+            if (commandToExecute is EndTimer)
+                ClearConditionals();
+            
+
             for (int i = 0; i < _conditionals.Count; i++)
             {
                 if(_conditionals[i] == false)
@@ -65,7 +69,8 @@ public class InteractionManager
                     execute = false;
                 }
             }
-            if(execute || commandToExecute is EndTimer)
+
+            if (execute)
                 await commandToExecute.Execute();
         }
 

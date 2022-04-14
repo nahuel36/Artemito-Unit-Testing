@@ -225,6 +225,71 @@ namespace Tests
             Debug.Log("Timer Duration:" + counter);
             OnEndSub.Received(1).Invoke();
         }
+
+
+        [UnityTest]
+        public IEnumerator TimerStartUseConditionalFalseAndExecuteEndSubCustomScript()
+        {
+            InteractionManager.Instance.ClearConditionals();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            CustomScriptTest custom = new GameObject("Custom").AddComponent<CustomScriptTest>();
+            custom.Configure(timer);
+            timer.Configure(1.5f, ()=> { custom.LoadScript(); });//espera 0.8 seg
+            timer.StartTimer();
+            while (counter < 1f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer.ifEnded();
+            while (counter < 2f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            Debug.Log("Timer Duration:" + counter);
+            Assert.GreaterOrEqual(counter, 2.3f);
+            //en este caso, el clear conditionals al final de una ejecucion hace que se borren los condicionales
+        }
+
+        [UnityTest]
+        public IEnumerator TimerStartUseConditionalFalseAndExecuteEndSubCustomScript2()
+        {
+            InteractionManager.Instance.ClearConditionals();
+            float counter = 0;
+            Timer timer = new GameObject("Timer").AddComponent<Timer>();
+            CustomScriptTest custom = new GameObject("Custom").AddComponent<CustomScriptTest>();
+            custom.Configure(timer);
+            timer.Configure(1.5f, () => { custom.LoadScript(); });//espera 0.8 seg
+            timer.StartTimer();
+            timer.WaitForSeconds(2f);
+            while (counter < 1f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer.ifEnded();
+            while (counter < 2f)
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            while (InteractionManager.Instance.Executing())
+            {
+                counter += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            Debug.Log("Timer Duration:" + counter);
+            Assert.GreaterOrEqual(counter, 2.8f);
+            //en este caso no se borran los condicionales porque llega al final, ya que antes de eso se encola otra tarea
+            //sin embargo se borran los condicionales por ser un timer end
+        }
         //cancel interaction
     }
 }
