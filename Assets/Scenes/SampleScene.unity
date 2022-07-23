@@ -749,6 +749,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da890f17b4181384491a0c44e8778bd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1849845131
 Transform:
   m_ObjectHideFlags: 0
@@ -926,6 +929,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792607401660561733, guid: d9fb222ab38baed479760050f1e2e3bd,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3792607401660561734, guid: d9fb222ab38baed479760050f1e2e3bd,
         type: 3}
