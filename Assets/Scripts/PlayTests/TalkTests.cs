@@ -57,9 +57,29 @@ namespace Tests
             inter.Queue(talker, "hello world", true, false);
             InteractionTalk inter2 = new InteractionTalk();
             inter2.Queue(talker, "message2", true, false);
-            inter2.Skip();
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
             yield return new WaitForEndOfFrame();
             Assert.AreEqual("message2", go.GetComponent<TMPro.TextMeshProUGUI>().text);
+        }
+
+        [UnityTest]
+        public IEnumerator TalkAndSkipAllMessages()
+        {
+            GameObject go = new GameObject();
+            go.AddComponent<TMPro.TextMeshProUGUI>();
+            ITextTimeCalculator calculator = new TextTimeCalculator();
+            LucasArtText talker = new LucasArtText(go.transform, calculator);
+            InteractionTalk inter = new InteractionTalk();
+            inter.Queue(talker, "hello world", true, false);
+            InteractionTalk inter2 = new InteractionTalk();
+            inter2.Queue(talker, "message2", true, false);
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
+            yield return new WaitForEndOfFrame();
+            Assert.AreEqual("", go.GetComponent<TMPro.TextMeshProUGUI>().text);
         }
     }
 }

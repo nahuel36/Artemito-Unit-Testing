@@ -18,5 +18,10 @@ public class DebugLogger : MonoBehaviour, IInteraction
         Debug.Log(log + " " + Time.time);
         await Task.Yield();
     }
+
+    public void Skip()
+    {
+
+    }
 }
 
