@@ -15,6 +15,7 @@ public class CustomScriptTest : CustomScript
 
     public override void LoadScript()
     {
+        base.LoadScript();
         timer.WaitForSeconds(0.2f);
         timer.WaitForSeconds(0.6f);
     }
