@@ -48,6 +48,47 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator TalkAndSkipToNextMessage()
+        {
+            InteractionTalk inter = new InteractionTalk();
+            inter.Queue(talker, "hello world", true, false);
+            InteractionTalk inter2 = new InteractionTalk();
+            inter2.Queue(talker, "message2", true, false);
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
+            yield return new WaitForEndOfFrame();
+            Assert.AreEqual("message2", talker.Text);
+        }
+
+        [UnityTest]
+        public IEnumerator TalkAndSkipTwoMessages()
+        {
+            InteractionTalk inter = new InteractionTalk();
+            inter.Queue(talker, "hello world", true, false);
+            InteractionTalk inter2 = new InteractionTalk();
+            inter2.Queue(talker, "message2", true, false);
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
+            yield return new WaitForEndOfFrame();
+            Assert.AreEqual("", talker.Text);
+        }
+
+        [UnityTest]
+        public IEnumerator TalkAndTrySkipNonSkippable()
+        {
+            InteractionTalk inter = new InteractionTalk();
+            inter.Queue(talker, "hello world", false, false);
+            InteractionTalk inter2 = new InteractionTalk();
+            inter2.Queue(talker, "message2", true, false);
+            yield return new WaitForEndOfFrame();
+            InteractionManager.Instance.SkipActualCommand();
+            yield return new WaitForEndOfFrame();
+            Assert.AreEqual("hello world", talker.Text);
+        }
+
+        [UnityTest]
         public IEnumerator TalkAndWaitToFinish()
         {
             talker.Talk("hello world", true);
@@ -67,55 +108,15 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator TalkAndSkipToNextMessage()
-        {
-            InteractionTalk inter = new InteractionTalk();
-            inter.Queue(talker, "hello world", true, false);
-            InteractionTalk inter2 = new InteractionTalk();
-            inter2.Queue(talker, "message2", true, false);
-            yield return new WaitForEndOfFrame();
-            InteractionManager.Instance.SkipActualCommand();
-            yield return new WaitForEndOfFrame();
-            Assert.AreEqual("message2", talker.Text);
-        }
-
-        [UnityTest]
-        public IEnumerator TalkAndTrySkipNonSkippable()
-        {
-            InteractionTalk inter = new InteractionTalk();
-            inter.Queue(talker, "hello world", false, false);
-            InteractionTalk inter2 = new InteractionTalk();
-            inter2.Queue(talker, "message2", true, false);
-            yield return new WaitForEndOfFrame();
-            InteractionManager.Instance.SkipActualCommand();
-            yield return new WaitForEndOfFrame();
-            Assert.AreEqual("hello world", talker.Text);
-        }
-
-        [UnityTest]
         public IEnumerator TalkAndWaitToNextMessage()
         {
             InteractionTalk inter = new InteractionTalk();
             inter.Queue(talker, "hello world", true, false);
             InteractionTalk inter2 = new InteractionTalk();
             inter2.Queue(talker, "message2", true, false);
-            yield return new WaitForSeconds(textTimeCalculator.CalculateTime("hello world")); 
+            yield return new WaitForSeconds(textTimeCalculator.CalculateTime("hello world"));
             Assert.AreEqual("message2", talker.Text);
         }
 
-        [UnityTest]
-        public IEnumerator TalkAndSkipTwoMessages()
-        {
-            InteractionTalk inter = new InteractionTalk();
-            inter.Queue(talker, "hello world", true, false);
-            InteractionTalk inter2 = new InteractionTalk();
-            inter2.Queue(talker, "message2", true, false);
-            yield return new WaitForEndOfFrame();
-            InteractionManager.Instance.SkipActualCommand();
-            yield return new WaitForEndOfFrame();
-            InteractionManager.Instance.SkipActualCommand();
-            yield return new WaitForEndOfFrame();
-            Assert.AreEqual("", talker.Text);
-        }
     }
 }
