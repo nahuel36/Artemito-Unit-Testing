@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class TalkTests
+    public class LucasArtsTalkTests
     {
         IMessageTalker talker;
         ITextTimeCalculator textTimeCalculator;
