@@ -38,6 +38,10 @@ namespace Tests
             GameObject.Instantiate(pathfinder);
             GameObject go = new GameObject("player");
             AIPath path = go.AddComponent<AIPath>();
+            path.gravity = Vector3.zero;
+            path.orientation = OrientationMode.YAxisForward;
+            path.enableRotation = false;
+            path.maxSpeed = 5;
             AIDestinationSetter setter = go.AddComponent<AIDestinationSetter>();
             GameObject target = new GameObject("target");
             target.transform.position = go.transform.position;
@@ -45,7 +49,7 @@ namespace Tests
             yield return new WaitForEndOfFrame();
             target.transform.position = new Vector3(5, -4, 0);
             yield return new WaitUntil(() =>path.reachedEndOfPath);
-            Assert.AreEqual(new Vector3(5, -4, 0), go.transform.position);
+            Assert.Less( Vector3.Distance(new Vector3(5, -4, 0), go.transform.position),0.25f);
         }
 
     }
