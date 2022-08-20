@@ -6,22 +6,22 @@ public class PNCCharacter : MonoBehaviour
 {
     IPathFinder pathFinder;
     IMessageTalker messageTalker;
-    [SerializeField] GameObject target;
     InteractionWalk cancelableWalk;
     InteractionTalk skippabletalk;
     InteractionTalk backgroundTalk;
 
     private void Awake()
     {
-        pathFinder = new AStarPathFinder(target, this.transform);
-        messageTalker = new LucasArtText(this.transform, new TextTimeCalculator());
-
     }
 
-    public void Configure(GameObject target)
+    public void ConfigureTalker()
     {
-        this.target = target;
-        pathFinder = new AStarPathFinder(target, this.transform);
+        messageTalker = new LucasArtText(this.transform, new TextTimeCalculator());
+    }
+
+    public void ConfigurePathFinder(float velocity)
+    {
+        pathFinder = new AStarPathFinder(this.transform, velocity);
     }
 
     // Start is called before the first frame update
