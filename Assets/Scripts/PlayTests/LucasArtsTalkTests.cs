@@ -22,7 +22,6 @@ namespace Tests
         {
             InteractionManager.Instance.ClearAll();
             GameObject go = new GameObject();
-            go.AddComponent<TMPro.TextMeshProUGUI>();
             textTimeCalculator = new TextTimeCalculator();
             talker = new LucasArtText(go.transform, textTimeCalculator);
         }
