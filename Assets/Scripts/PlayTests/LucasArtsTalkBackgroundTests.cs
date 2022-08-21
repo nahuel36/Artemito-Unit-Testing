@@ -10,24 +10,24 @@ namespace Tests
     {
         IMessageTalker talker;
         ITextTimeCalculator textTimeCalculator;
-        InteractionTalk talkInteraction;
+        CommandTalk talkInteraction;
 
         [TearDown]
         public void TearDown()
         {
-            InteractionManager.Instance.ClearAll();
-            InteractionManager.BackgroundInstance.ClearAll();
+            CommandsQueue.Instance.ClearAll();
+            CommandsQueue.BackgroundInstance.ClearAll();
         }
 
         [SetUp]
         public void SetUp()
         {
-            InteractionManager.Instance.ClearAll();
-            InteractionManager.BackgroundInstance.ClearAll();
+            CommandsQueue.Instance.ClearAll();
+            CommandsQueue.BackgroundInstance.ClearAll();
             GameObject go = new GameObject();
             textTimeCalculator = new TextTimeCalculator();
             talker = new LucasArtText(go.transform, textTimeCalculator);
-            talkInteraction = new InteractionTalk();
+            talkInteraction = new CommandTalk();
         }
 
         // A Test behaves as an ordinary method
@@ -46,7 +46,7 @@ namespace Tests
         {
             talkInteraction.Queue(talker, "hello world", true, true);
             yield return new WaitForEndOfFrame();
-            InteractionManager.BackgroundInstance.SkipActualCommand();
+            CommandsQueue.BackgroundInstance.SkipActualCommand();
             yield return new WaitForEndOfFrame();
             Assert.AreEqual("", talker.Text);
         }
@@ -54,12 +54,12 @@ namespace Tests
         [UnityTest]
         public IEnumerator TalkAndSkipToNextMessage()
         {
-            InteractionTalk inter = new InteractionTalk();
+            CommandTalk inter = new CommandTalk();
             inter.Queue(talker, "hello world", true, true);
-            InteractionTalk inter2 = new InteractionTalk();
+            CommandTalk inter2 = new CommandTalk();
             inter2.Queue(talker, "message2", true, true);
             yield return new WaitForEndOfFrame();
-            InteractionManager.BackgroundInstance.SkipActualCommand();
+            CommandsQueue.BackgroundInstance.SkipActualCommand();
             yield return new WaitForEndOfFrame();
             Assert.AreEqual("message2", talker.Text);
         }
@@ -67,14 +67,14 @@ namespace Tests
         [UnityTest]
         public IEnumerator TalkAndSkipTwoMessages()
         {
-            InteractionTalk inter = new InteractionTalk();
+            CommandTalk inter = new CommandTalk();
             inter.Queue(talker, "hello world", true, true);
-            InteractionTalk inter2 = new InteractionTalk();
+            CommandTalk inter2 = new CommandTalk();
             inter2.Queue(talker, "message2", true, true);
             yield return new WaitForEndOfFrame();
-            InteractionManager.BackgroundInstance.SkipActualCommand();
+            CommandsQueue.BackgroundInstance.SkipActualCommand();
             yield return new WaitForEndOfFrame();
-            InteractionManager.BackgroundInstance.SkipActualCommand();
+            CommandsQueue.BackgroundInstance.SkipActualCommand();
             yield return new WaitForEndOfFrame();
             Assert.AreEqual("", talker.Text);
         }
@@ -90,9 +90,9 @@ namespace Tests
         [UnityTest]
         public IEnumerator TalkAndWaitToFinishTwoMessages()
         {
-            InteractionTalk inter1 = new InteractionTalk();
+            CommandTalk inter1 = new CommandTalk();
             inter1.Queue(talker, "hello world", false, true);
-            InteractionTalk inter2 = new InteractionTalk();
+            CommandTalk inter2 = new CommandTalk();
             inter2.Queue(talker, "message2", false, true);
             yield return new WaitForSeconds(textTimeCalculator.CalculateTime("hello world") + textTimeCalculator.CalculateTime("message2"));
             yield return new WaitForEndOfFrame();
@@ -103,9 +103,9 @@ namespace Tests
         [UnityTest]
         public IEnumerator TalkAndWaitToNextMessage()
         {
-            InteractionTalk inter = new InteractionTalk();
+            CommandTalk inter = new CommandTalk();
             inter.Queue(talker, "hello world", true, true);
-            InteractionTalk inter2 = new InteractionTalk();
+            CommandTalk inter2 = new CommandTalk();
             inter2.Queue(talker, "message2", true, true);
             yield return new WaitForSeconds(textTimeCalculator.CalculateTime("hello world"));
             Assert.AreEqual("message2", talker.Text);
@@ -115,12 +115,12 @@ namespace Tests
         [UnityTest]
         public IEnumerator Z_TalkAndTrySkipNonSkippable()
         {
-            InteractionTalk inter = new InteractionTalk();
+            CommandTalk inter = new CommandTalk();
             inter.Queue(talker, "hello world", false, true);
-            InteractionTalk inter2 = new InteractionTalk();
+            CommandTalk inter2 = new CommandTalk();
             inter2.Queue(talker, "message2", true, true);
             yield return new WaitForEndOfFrame();
-            InteractionManager.BackgroundInstance.SkipActualCommand();
+            CommandsQueue.BackgroundInstance.SkipActualCommand();
             yield return new WaitForEndOfFrame();
             Assert.AreEqual("hello world", talker.Text);
         }

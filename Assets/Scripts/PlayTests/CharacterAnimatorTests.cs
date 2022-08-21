@@ -42,7 +42,7 @@ namespace Tests
             character.ConfigureTalker();
             character.Talk("Hello darling");
             
-            yield return new WaitWhile(() => InteractionManager.Instance.Executing());
+            yield return new WaitWhile(() => CommandsQueue.Instance.Executing());
 
             GameObject.Destroy(character.gameObject);
             anim.Received().SetTalking(true);
@@ -59,7 +59,7 @@ namespace Tests
 
             character.Walk(new Vector3(5, -4, 0));
             
-            yield return new WaitWhile(()=>InteractionManager.Instance.Executing());
+            yield return new WaitWhile(()=>CommandsQueue.Instance.Executing());
             GameObject.Destroy(pathfindergo);
             GameObject.Destroy(character.gameObject);
             anim.Received().SetWalking(true);

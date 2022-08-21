@@ -22,7 +22,7 @@ namespace Tests
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
             timer.WaitForSeconds(0.5f);
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -39,7 +39,7 @@ namespace Tests
             timer.WaitForSeconds(0.2f);
             timer.WaitForSeconds(0.5f);
             timer.WaitForSeconds(0.2f);
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -57,7 +57,7 @@ namespace Tests
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
             cs.Configure(timer);
             cs.LoadScript();
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -75,7 +75,7 @@ namespace Tests
             CustomScriptTest cs = new GameObject("Custom").AddComponent<CustomScriptTest>();
             cs.Configure(timer);
             cs.LoadScript();
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -115,7 +115,7 @@ namespace Tests
                 yield return new WaitForEndOfFrame();
             }
             timer.WaitForSeconds(3f);
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -127,7 +127,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartAndConditionalEndTrue()
         {
-            InteractionManager.Instance.ClearConditionals();
+            CommandsQueue.Instance.ClearConditionals();
             var OnEndSub = Substitute.For<Action>();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
@@ -140,7 +140,7 @@ namespace Tests
             }
             timer.ifEnded();
             timer.WaitForSeconds(2);
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -153,7 +153,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartAndConditionalEndFalse()
         {
-            InteractionManager.Instance.ClearConditionals();
+            CommandsQueue.Instance.ClearConditionals();
             var OnEndSub = Substitute.For<Action>();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
@@ -166,7 +166,7 @@ namespace Tests
             }
             timer.ifEnded();
             timer.WaitForSeconds(2);
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -179,7 +179,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartAndConditionalAsIfEndFalse()
         {
-            InteractionManager.Instance.ClearConditionals();
+            CommandsQueue.Instance.ClearConditionals();
             var OnEndSub = Substitute.For<Action>();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
@@ -192,7 +192,7 @@ namespace Tests
             }
             if(timer.ifEnded())
                 timer.WaitForSeconds(2);
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -205,7 +205,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartUseConditionalFalseAndExecuteEndSub()
         {
-            InteractionManager.Instance.ClearConditionals();
+            CommandsQueue.Instance.ClearConditionals();
             var OnEndSub = Substitute.For<Action>();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
@@ -222,7 +222,7 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            InteractionManager.Instance.DebugCount();
+            CommandsQueue.Instance.DebugCount();
             Debug.Log("Timer Duration:" + counter);
             OnEndSub.Received(1).Invoke();
         }
@@ -231,7 +231,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartUseConditionalFalseAndExecuteEndSubCustomScript()
         {
-            InteractionManager.Instance.ClearConditionals();
+            CommandsQueue.Instance.ClearConditionals();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
             CustomScriptTest custom = new GameObject("Custom").AddComponent<CustomScriptTest>();
@@ -249,7 +249,7 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -262,7 +262,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator TimerStartUseConditionalFalseAndExecuteEndSubCustomScript2()
         {
-            InteractionManager.Instance.ClearConditionals();
+            CommandsQueue.Instance.ClearConditionals();
             float counter = 0;
             Timer timer = new GameObject("Timer").AddComponent<Timer>();
             CustomScriptTest custom = new GameObject("Custom").AddComponent<CustomScriptTest>();
@@ -281,7 +281,7 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            while (InteractionManager.Instance.Executing())
+            while (CommandsQueue.Instance.Executing())
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();

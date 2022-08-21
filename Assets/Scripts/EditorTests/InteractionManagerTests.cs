@@ -15,7 +15,7 @@ namespace Tests
         public void InteractionManagerGetInstanceReturnNotNull()
         {
             // Use the Assert class to test conditions
-            Assert.True(InteractionManager.Instance != null);
+            Assert.True(CommandsQueue.Instance != null);
         }
     }
 }

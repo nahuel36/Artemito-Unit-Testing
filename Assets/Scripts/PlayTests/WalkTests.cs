@@ -12,20 +12,20 @@ namespace Tests
     {
         IMessageTalker talker;
         ITextTimeCalculator textTimeCalculator;
-        InteractionTalk talkInteraction;
+        CommandTalk talkInteraction;
 
         [TearDown]
         public void TearDown()
         {
-            InteractionManager.Instance.ClearAll();
-            InteractionManager.BackgroundInstance.ClearAll();
+            CommandsQueue.Instance.ClearAll();
+            CommandsQueue.BackgroundInstance.ClearAll();
         }
 
         [SetUp]
         public void SetUp()
         {
-            InteractionManager.Instance.ClearAll();
-            InteractionManager.BackgroundInstance.ClearAll();
+            CommandsQueue.Instance.ClearAll();
+            CommandsQueue.BackgroundInstance.ClearAll();
         }
 
         // A Test behaves as an ordinary method
