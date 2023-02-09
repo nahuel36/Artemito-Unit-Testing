@@ -15,7 +15,8 @@ public class DebugLogger : MonoBehaviour, ICommand
 
     public async Task Execute()
     {
-        Debug.Log(log + " " + Time.time);
+        //Debug.Log(log + " " + Time.time);
+        ServiceLocator.Instance.GetService<ITelemetrySender>().Send(log + " " + Time.time);
         await Task.Yield();
     }
 
