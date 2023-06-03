@@ -41,7 +41,7 @@ public class Timer : MonoBehaviour//, IInteraction
 
     public bool ifEnded()
     {
-        Conditional onend = new Conditional();
+        ConditionalCommand onend = new ConditionalCommand();
         onend.QueueConditional(ended);
         return ended;
     }
