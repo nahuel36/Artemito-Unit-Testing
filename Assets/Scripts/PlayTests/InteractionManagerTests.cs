@@ -138,7 +138,11 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            timer.ifEnded();
+            Conditional newCond = new Conditional();
+            newCond.actionIfFalse = Conditional.GetVariableAction.Stop;
+            newCond.actionIfTrue = Conditional.GetVariableAction.Continue;
+
+            timer.ifEnded(ref newCond);
             timer.WaitForSeconds(2);
             while (CommandsQueue.Instance.Executing())
             {
@@ -164,7 +168,11 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            timer.ifEnded();
+            Conditional newCond = new Conditional();
+            newCond.actionIfFalse = Conditional.GetVariableAction.Stop;
+            newCond.actionIfTrue = Conditional.GetVariableAction.Continue;
+
+            timer.ifEnded(ref newCond);
             timer.WaitForSeconds(2);
             while (CommandsQueue.Instance.Executing())
             {
@@ -190,7 +198,11 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            if(timer.ifEnded())
+            Conditional newCond = new Conditional();
+            newCond.actionIfFalse = Conditional.GetVariableAction.Stop;
+            newCond.actionIfTrue = Conditional.GetVariableAction.Continue;
+
+            if (timer.ifEnded(ref newCond))
                 timer.WaitForSeconds(2);
             while (CommandsQueue.Instance.Executing())
             {
@@ -216,13 +228,16 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            timer.ifEnded();
+            Conditional newCond = new Conditional();
+            newCond.actionIfFalse = Conditional.GetVariableAction.Stop;
+            newCond.actionIfTrue = Conditional.GetVariableAction.Continue;
+
+            timer.ifEnded(ref newCond);
             while(counter < 2f)
             {
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            CommandsQueue.Instance.DebugCount();
             Debug.Log("Timer Duration:" + counter);
             OnEndSub.Received(1).Invoke();
         }
@@ -243,7 +258,11 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            timer.ifEnded();
+            Conditional newCond = new Conditional();
+            newCond.actionIfFalse = Conditional.GetVariableAction.Stop;
+            newCond.actionIfTrue = Conditional.GetVariableAction.Continue;
+
+            timer.ifEnded(ref newCond);
             while (counter < 2f)
             {
                 counter += Time.deltaTime;
@@ -275,7 +294,11 @@ namespace Tests
                 counter += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
-            timer.ifEnded();
+            Conditional newCond = new Conditional();
+            newCond.actionIfFalse = Conditional.GetVariableAction.Stop;
+            newCond.actionIfTrue = Conditional.GetVariableAction.Continue;
+
+            timer.ifEnded(ref newCond);
             while (counter < 2f)
             {
                 counter += Time.deltaTime;
