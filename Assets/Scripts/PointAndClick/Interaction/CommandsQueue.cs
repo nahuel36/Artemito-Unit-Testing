@@ -3,28 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public class CommandsQueue  
+public class Conditional {
+    public enum GetVariableAction
+    {
+        Stop,
+        Continue,
+        GoToSpecificLine
+    }
+    public GetVariableAction actionIfTrue;
+    public GetVariableAction actionIfFalse;
+    public int lineToGoIfTrue;
+    public int lineToGoIfFalse;
+    public bool condition;
+}
+
+public class CommandsQueue
 {
     public static CommandsQueue Instance => _instance ?? (_instance = new CommandsQueue());
     public static CommandsQueue BackgroundInstance => _bginstance ?? (_bginstance = new CommandsQueue());
 
-    private readonly Queue<ICommand> _commandsToExecute;
+    private readonly List<ICommand> _commandsToExecute;
     private bool _runningCommand;
     private static CommandsQueue _instance;
     private static CommandsQueue _bginstance;
-    private List<bool> _conditionals;
+    private Conditional _conditional;
     private ICommand actualCommand;
-
+    private int actualCommandIndex = 0;
+    private bool execute = true;
     private CommandsQueue()
     {
-        _commandsToExecute = new Queue<ICommand>();
-        _conditionals = new List<bool>();
+        _commandsToExecute = new List<ICommand>();
         _runningCommand = false;
+        actualCommandIndex = 0;
     }
 
     public void AddCommand(ICommand commandToEnqueue)
     {
-        _commandsToExecute.Enqueue(commandToEnqueue);
+        _commandsToExecute.Add(commandToEnqueue);
         RunNextCommand();
     }
 
@@ -33,27 +48,63 @@ public class CommandsQueue
         return _runningCommand;
     }
 
-    public void AddConditional(bool cond)
+    public void AddConditional(Conditional cond)
     {
-        _conditionals.Add(cond);
+        _conditional = cond;
+
+         if (_conditional != null && _conditional.condition == true)
+            {
+                if (_conditional.actionIfTrue == Conditional.GetVariableAction.Stop)
+                {
+                    execute = false;
+                }
+                if (_conditional.actionIfTrue == Conditional.GetVariableAction.Continue)
+                {
+                    execute = true;
+                }
+                if (_conditional.actionIfTrue == Conditional.GetVariableAction.GoToSpecificLine)
+                {
+                    actualCommandIndex = _conditional.lineToGoIfTrue;
+                    execute = true;
+                }
+            }
+            if (_conditional != null && _conditional.condition == false)
+            {
+                if (_conditional.actionIfFalse == Conditional.GetVariableAction.Stop)
+                {
+                    execute = false;
+                }
+                if (_conditional.actionIfFalse == Conditional.GetVariableAction.Continue)
+                {
+                    execute = true;
+                }
+                if (_conditional.actionIfFalse == Conditional.GetVariableAction.GoToSpecificLine)
+                {
+                    actualCommandIndex = _conditional.lineToGoIfFalse;
+                    execute = true;
+                }
+            }
+
     }
 
     public void ClearConditionals()
     {
-        _conditionals.Clear();
+        _conditional = null;
+    }
+
+    public void SkipActualCommand()
+    {
+        if (actualCommand != null)
+            actualCommand.Skip();
     }
 
     public void ClearAll()
     {
-        _conditionals.Clear();
+        _conditional = null;
         _commandsToExecute.Clear();
         SkipActualCommand();
     }
 
-    public void DebugCount()
-    {
-        Debug.Log(_conditionals.Count);
-    }
 
     private async Task RunNextCommand()
     {
@@ -62,23 +113,14 @@ public class CommandsQueue
             return;
         }
 
-        while (_commandsToExecute.Count > 0)
+        while (actualCommandIndex < _commandsToExecute.Count)
         {
             _runningCommand = true;
-            var commandToExecute = _commandsToExecute.Dequeue();
-            bool execute = true;
+            var commandToExecute = _commandsToExecute[actualCommandIndex];
+            actualCommandIndex++;
 
             if (commandToExecute is EndTimer)
-                ClearConditionals();
-            
-
-            for (int i = 0; i < _conditionals.Count; i++)
-            {
-                if(_conditionals[i] == false)
-                {
-                    execute = false;
-                }
-            }
+                execute = true;
 
             if (execute)
             {
@@ -87,13 +129,12 @@ public class CommandsQueue
             }
         }
 
-        ClearConditionals();
+        execute = true;
+        _commandsToExecute.Clear();
+        actualCommandIndex = 0;
         _runningCommand = false;
     }
-
-    public void SkipActualCommand()
-    {
-        if (actualCommand != null)
-            actualCommand.Skip();
-    }
 }
+
+
+

@@ -1,27 +1,56 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class PNCCharacter : MonoBehaviour
+
+
+public interface SayScript
+{
+    string SayWithScript();
+}
+
+
+public class PNCCharacter : PNCInteractuable
 {
     IPathFinder pathFinder;
     IMessageTalker messageTalker;
     CommandWalk cancelableWalk;
-    CommandTalk skippabletalk;
+    CommandTalk normalTalk;
     CommandTalk backgroundTalk;
+
+    public Sprite SierraTextFace;
+
+    Animator anim;
+    CharacterAnimator characterAnimator;
 
     private void Awake()
     {
+        anim = GetComponentInChildren<Animator>();
+        ConfigurePathFinder(1);
+        ConfigureTalker();
+        CharacterAnimatorAdapter characterAnimatorAdapter = new CharacterAnimatorAdapter();
+        characterAnimatorAdapter.Configure(anim);
+        characterAnimator = GetComponentInChildren<CharacterAnimator>();
+        characterAnimator.Configure(characterAnimatorAdapter, this);
     }
 
     public void ConfigureTalker()
     {
-        messageTalker = new LucasArtText(this.transform, new TextTimeCalculator());
+        Settings settings = Resources.Load<Settings>("Settings/Settings");
+        if (settings.speechStyle == Settings.SpeechStyle.LucasArts)
+            messageTalker = new LucasArtText(this.transform, new TextTimeCalculator());
+        else if (settings.speechStyle == Settings.SpeechStyle.Sierra)
+            messageTalker = new SierraText(this.transform, new TextTimeCalculator(), SierraTextFace);
     }
 
     public void ConfigurePathFinder(float velocity)
     {
-        pathFinder = new AStarPathFinder(this.transform, velocity);
+        Settings settings = Resources.Load<Settings>("Settings/Settings");
+        if (settings.pathFindingType == Settings.PathFindingType.AronGranbergAStarPath)
+            pathFinder = new AStarPathFinderAdapter(this.transform, velocity);
+        else if (settings.pathFindingType == Settings.PathFindingType.UnityNavigationMesh)
+            pathFinder = new NavMesh2DPathFinder(this.transform);
     }
 
     // Start is called before the first frame update
@@ -37,7 +66,7 @@ public class PNCCharacter : MonoBehaviour
         cancelableWalk.Queue(pathFinder, destiny, true);
     }
 
-    public void CancelWalk()
+    public void CancelWalkAndTasks()
     {
         CommandsQueue.Instance.ClearAll();
         if(cancelableWalk != null) cancelableWalk.Skip();
@@ -45,9 +74,16 @@ public class PNCCharacter : MonoBehaviour
 
     public void Talk(string message)
     {
-        skippabletalk = new CommandTalk();
-        skippabletalk.Queue(messageTalker, message, true,false);
+        normalTalk = new CommandTalk();
+        normalTalk.Queue(messageTalker, message, true,false);
     }
+
+    public void UnskippableTalk(string message)
+    {
+        normalTalk = new CommandTalk();
+        normalTalk.Queue(messageTalker, message, false, false);
+    }
+
 
     public void BackgroundTalk(string message)
     {
@@ -57,12 +93,25 @@ public class PNCCharacter : MonoBehaviour
 
     public void SkipTalk()
     {
-        if(skippabletalk != null)
-            skippabletalk.Skip();
+        if(normalTalk != null)
+            normalTalk.Skip();
+    }
+
+    public void SkipWalk()
+    {
+        if (cancelableWalk != null)
+            cancelableWalk.Skip();
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+            SkipTalk();
+
     }
 
     public bool isTalking()
     {
-        return (backgroundTalk != null && backgroundTalk.IsTalking()) || (skippabletalk != null && skippabletalk.IsTalking());
+        return (backgroundTalk != null && backgroundTalk.IsTalking()) || (normalTalk != null && normalTalk.IsTalking());
     }
 }

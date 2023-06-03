@@ -6,18 +6,18 @@ using UnityEngine.Events;
 
 public class ConditionalCommand : ICommand
 {
-    bool condition;
+    Conditional conditional;
 
     // Start is called before the first frame update
     public async Task Execute()
     {
-        CommandsQueue.Instance.AddConditional(condition);
+        CommandsQueue.Instance.AddConditional(conditional);
         await Task.Yield();
     }
 
-    public void QueueConditional(bool condition)
+    public void QueueConditional(Conditional conditional)
     {
-        this.condition = condition;
+        this.conditional = conditional;
         CommandsQueue.Instance.AddCommand(this);
     }
 

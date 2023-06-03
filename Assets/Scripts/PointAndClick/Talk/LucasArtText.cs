@@ -1,7 +1,8 @@
 ﻿using UnityEngine.UI;
-using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using TMPro;
 
 public class LucasArtText : IMessageTalker
 {
@@ -28,7 +29,7 @@ public class LucasArtText : IMessageTalker
         UnityEngine.GameObject textGO = new UnityEngine.GameObject("text");
         textGO.transform.parent = canvasGO.transform;
         textmesh = textGO.transform.gameObject.AddComponent<TextMeshProUGUI>();
-        textmesh.transform.position = transform.position + new Vector3(0, 1.45f, 0);
+        textmesh.transform.position = transform.position + new Vector3(0,1.45f,0);
         textmesh.fontSize = 0.4f;
         textmesh.horizontalAlignment = HorizontalAlignmentOptions.Center;
         textmesh.verticalAlignment = VerticalAlignmentOptions.Middle;
