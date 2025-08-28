@@ -1,3 +1,7 @@
+# Descripción
+
+Esta version es similar a la primer versión, pero se implementó desde raí­z pensando en el Unit Testing
+
 ### A* Pathfinding Project Dependency
 
 This project depends on the [A* Pathfinding Project](https://arongranberg.com/astar/), which is **not included** in this repository due to licensing restrictions.
