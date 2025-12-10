@@ -12,9 +12,5 @@ public class Installer : MonoBehaviour
         ServiceLocator.Instance.RegisterService<ITelemetrySender>(telemetrySender);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
